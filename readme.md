@@ -7,10 +7,14 @@
 
 ## Instructions
 
-Clone Repo and Create Python3.6 venv  
+Clone Repo and Create Python3.6 venv
+```
+python3 -m venv /path/to/repo/venv
+source venv/bin/activate
+``` 
 Install Requirements
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 #### To Test Asset Loading and Exports
 Edit test.py assetsdir, outputdir, and cmu_skel_file to full paths
