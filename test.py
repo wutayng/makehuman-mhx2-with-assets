@@ -11,7 +11,9 @@ assetsdir = "/home/warren/data/synthetic-training/humans-assets/makeHumanAssets"
 outputdir = "/home/warren/data/synthetic-training/humans-assets/makeHumans"
 
 # CMU Skeleton File
-cmu_skel_file = "/home/warren/github/makehuman-mhx2-with-assets/makehuman-master/makehuman/data/rigs/cmu_mb.mhskel"
+cmu_skel_file = (
+    "/home/warren/data/synthetic-training/humans-assets/makeHumanAssets/cmu_mb.mhskel"
+)
 
 import os
 import shutil
@@ -20,7 +22,8 @@ from core import G
 human = G.app.selectedHuman
 api_assets = G.app.mhapi.assets
 
-def testAssets(dirs,asset_type,output_dir):
+
+def testAssets(dirs, asset_type, output_dir):
     """
     :param dirs: Directories of Asset
     :param type: Type of Asset
@@ -35,20 +38,24 @@ def testAssets(dirs,asset_type,output_dir):
         for elem in list:
             print(directory + elem)
             if os.path.isfile(directory + elem + "/" + elem + ".mhpxy"):
-                 pxy = addProxyAsset(asset_type, (directory + elem + "/" + elem + ".mhpxy"))
-                 print('Asset .mhpxy Added Successfully')
-                 os.mkdir(output_dir + str(iter_num))
-                 exportMHX2(output_dir + str(iter_num) + '/testout.mhx2')
-                 print('Human Exported Successfully')
-                 resetAll()
-            elif os.path.isfile(directory + elem + "/" + elem + ".mhclo"):
-                clo = addCloAsset(asset_type, (directory + elem + "/" + elem + ".mhclo"))
-                print('Asset .mhclo Added Successfully')
+                pxy = addProxyAsset(
+                    asset_type, (directory + elem + "/" + elem + ".mhpxy")
+                )
+                print("Asset .mhpxy Added Successfully")
                 os.mkdir(output_dir + str(iter_num))
-                exportMHX2(output_dir + str(iter_num) + '/testout.mhx2')
-                print('Human Exported Successfully')
+                exportMHX2(output_dir + str(iter_num) + "/testout.mhx2")
+                print("Human Exported Successfully")
                 resetAll()
-            iter_num+=1
+            elif os.path.isfile(directory + elem + "/" + elem + ".mhclo"):
+                clo = addCloAsset(
+                    asset_type, (directory + elem + "/" + elem + ".mhclo")
+                )
+                print("Asset .mhclo Added Successfully")
+                os.mkdir(output_dir + str(iter_num))
+                exportMHX2(output_dir + str(iter_num) + "/testout.mhx2")
+                print("Human Exported Successfully")
+                resetAll()
+            iter_num += 1
     return
 
 
@@ -62,6 +69,7 @@ def addProxyAsset(type, pxyfile):
     global human
     import proxy, events3d
     import numpy as np
+
     pxy = proxy.loadProxy(human, str(pxyfile), type=type)
     mesh, obj = pxy.loadMeshAndObject(human)
     mesh.setPickable(True)
@@ -111,6 +119,7 @@ def addCloAsset(type, clofile):
 
     return clofile
 
+
 def exportMHX2(path):
     """
     Save current human + assets as .mhx2
@@ -145,12 +154,14 @@ def exportMHX2(path):
     exporter.export(human, filename)
     return
 
+
 def resetAll():
     """
     Resets Human With Base CMU Skeleton
     :return:
     """
     import skeleton
+
     global cmu_skel_file
     # Reset Human
     G.app._resetHuman()
@@ -158,6 +169,7 @@ def resetAll():
     cmu_skel = skeleton.load(cmu_skel_file, human.meshData)
     G.app.selectedHuman.setSkeleton(cmu_skel)
     return
+
 
 # Create Top Level Assets Dirs
 top_level_dirs = {
@@ -203,37 +215,35 @@ for sections in clothing_dirs:
             clothes.append(top_level_dirs["clothes"] + sections + gender + likelihood)
 
 try:
-	shutil.rmtree(outputdir + '/testing')
+    shutil.rmtree(outputdir + "/testing")
 except:
-	pass
-os.mkdir(outputdir + '/testing')
+    pass
+os.mkdir(outputdir + "/testing")
 resetAll()
 
-os.mkdir(outputdir + '/testing/hats')
-testAssets(hats,"Clothes",outputdir + "/testing/hats/")
+os.mkdir(outputdir + "/testing/hats")
+testAssets(hats, "Clothes", outputdir + "/testing/hats/")
 print("----- Hats Tested Successfully -----")
 
-os.mkdir(outputdir + '/testing/eyebrows')
-testAssets(eyebrows,"Eyebrows",outputdir + "/testing/eyebrows/")
+os.mkdir(outputdir + "/testing/eyebrows")
+testAssets(eyebrows, "Eyebrows", outputdir + "/testing/eyebrows/")
 print("----- Eyebrows Tested Successfully -----")
 
-os.mkdir(outputdir + '/testing/hair')
-testAssets(hair,"Hair",outputdir + "/testing/hair/")
+os.mkdir(outputdir + "/testing/hair")
+testAssets(hair, "Hair", outputdir + "/testing/hair/")
 print("----- Hair Tested Successfully -----")
 
-os.mkdir(outputdir + '/testing/accessories')
-testAssets(accessories,"Clothes",outputdir + "/testing/accessories/")
+os.mkdir(outputdir + "/testing/accessories")
+testAssets(accessories, "Clothes", outputdir + "/testing/accessories/")
 print("----- Accessories Tested Successfully -----")
 
-os.mkdir(outputdir + '/testing/shoes')
-testAssets(shoes,"Clothes",outputdir + "/testing/shoes/")
+os.mkdir(outputdir + "/testing/shoes")
+testAssets(shoes, "Clothes", outputdir + "/testing/shoes/")
 print("----- Shoes Tested Successfully -----")
 
-os.mkdir(outputdir + '/testing/clothes')
-testAssets(clothes,"Clothes",outputdir + "/testing/clothes/")
+os.mkdir(outputdir + "/testing/clothes")
+testAssets(clothes, "Clothes", outputdir + "/testing/clothes/")
 print("----- Clothes Tested Successfully -----")
 
 print("----- All Assets Tested Successfully -----")
-shutil.rmtree(outputdir + '/testing')
-
-
+shutil.rmtree(outputdir + "/testing")

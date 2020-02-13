@@ -1,46 +1,30 @@
 ## Creating Random Humans (.mhx2 + Textures)
-#### Using MakeHuman 1.2 Cloned Repository @ commit=c00a530 1/18/2020
-##### Application /makehuman-master is OFFICIAL and UNMODIFIED  
-##### Additions: several /data files as found in packaged application, community plugins
+##### Makehuman Application is OFFICIAL and UNMODIFIED  
 ##### Output From Scripts therefore subject to CC0 (No Rights Reserved)
 <hr>
 
 ## Instructions
-
-Clone Repo and Create Python3.6 venv
-```
-python3 -m venv /path/to/repo/venv
-source venv/bin/activate
-``` 
-Install Requirements
-```
-pip install -r requirements.txt
-```
+####Install Makehuman
+Download Plugins - 1_mhapi and 9_export_mhx2  
+Copy into Plugins Folder and Enable Plugins via Makehuman GUI
 #### To Test Asset Loading and Exports
-Edit test.py assetsdir, outputdir, and cmu_skel_file to full paths
-```
-python ./makehuman-master/makehuman/makehuman.py
-```
-Navigate to Utilities/Scripting Tab and Load test.py  
-
-Execute Script
+1. Edit test.py assetsdir, outputdir, and cmu_skel_file to full paths  
+2. Start MakeHuman
+3. Navigate to Utilities/Scripting Tab and Load test.py  
+4. Execute Script
 
 The test.py script will load and export all assets to make sure they function correctly.  
 If the script fails, look for the latest path to an asset in the terminal output. This asset was not able to load and export correctly.
 
 #### To Output Random Makehumans
-Edit run.py assetsdir, outputdir, and cmu_skel_file to full paths  
+1. Edit run.py assetsdir, outputdir, and cmu_skel_file to full paths  
+2. Edit any desired parameter changes in run.py
+3. Start MakeHuman
+4. Navigate to Utilities/Scripting Tab and Load run.py  
+5. Execute Script
 
-Edit any desired parameter changes in run.py
-```
-python ./makehuman-master/makehuman/makehuman.py
-```
-Navigate to Utilities/Scripting Tab and Load run.py  
-
-Execute Script
-
-This script will create a dated directory in 'outputdir'
-Directory will include 'num_humans' folders containing full makeHumans (.mhx2 + textures)
+This script will create a dated directory in 'outputdir'  
+Directory will include 'run.py var: num_humans' folders containing full makeHumans (.mhx2 + textures)
 
 ## Asset Directory
 ### makeHumanAssets Dir Must Have the Following Structure
@@ -100,7 +84,7 @@ Directory will include 'num_humans' folders containing full makeHumans (.mhx2 + 
             
 ### For each Asset Named ''examplename'
 Folder 'examplename' must contain  
-• examplename.obj or examplename.mhpxy (asset main file)  
+• examplename.obj or examplename.mhpxy  
 • examplename_diffuse.png (texture)
 
 

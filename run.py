@@ -10,10 +10,12 @@ assetsdir = "/home/warren/data/synthetic-training/humans-assets/makeHumanAssets"
 outputdir = "/home/warren/data/synthetic-training/humans-assets/makeHumans"
 
 # CMU Skeleton File
-cmu_skel_file = "/home/warren/github/makehuman-mhx2-with-assets/makehuman-master/makehuman/data/rigs/cmu_mb.mhskel"
+cmu_skel_file = (
+    "/home/warren/data/synthetic-training/humans-assets/makeHumanAssets/cmu_mb.mhskel"
+)
 
 # Number of Humans to Create
-num_humans = 10
+num_humans = 20
 
 # Human Create Parameters for Randomization
 # Gender: Choose High/Low Threshold for Gender Asset Selection (Scale 0 to 1) - Lower Number = Feminine
@@ -46,8 +48,10 @@ from datetime import datetime
 start_time = time.time()
 
 from core import G
+
 human = G.app.selectedHuman
 api_assets = G.app.mhapi.assets
+
 
 def extract_number(f):
     """
@@ -70,6 +74,7 @@ def genderChoice(gender_Weight):
     # For Mid Range Gender Weight, Take Random Choice For Male/Female Clothing/Hair
     global gender_low, gender_high
     import random
+
     genderChoices = ["male", "female"]
     if gender_Weight < gender_low:
         choice = "female"
@@ -90,6 +95,7 @@ def clothingSectionChoice():
     """
     global clothing_full
     import random
+
     choice = random.randint(1, 100)
     if choice <= clothing_full:
         selection = "full"
@@ -110,6 +116,7 @@ def asset_equipChoice(type, genderWeight, chance):
     :return: output [name, path, asset_file, type]
     """
     import random
+
     global assetsdir, addRandomAsset
     choice = random.randint(1, 100)
     # Equip Clothing if Random Selection
@@ -127,7 +134,9 @@ def asset_equipChoice(type, genderWeight, chance):
         elif type == "Shoes":
             addRandomAsset("Shoes", assetsdir + "/clothes/shoes/", genderWeight)
         elif type == "Accessories":
-            addRandomAsset("Accessories", assetsdir + "/clothes/accessories/", genderWeight)
+            addRandomAsset(
+                "Accessories", assetsdir + "/clothes/accessories/", genderWeight
+            )
         else:
             raise Exception("asset_equipChoice Error: Bad Asset Type")
     return
@@ -158,6 +167,7 @@ def setRandomMHWeights():
     :return:
     """
     import random
+
     global age_limit
     # ROUND ALL TO 2 DECIMAL PLACES
     # Gender - 0 to 1 Normal Distribution
@@ -218,7 +228,9 @@ def addRandomAsset(type, dir, gender_Weight):
             # Reselect Randomization for Bottom Clothing Half
             new_gender = genderChoice(gender_Weight)
             new_likelihood = dir_likeihood()
-            selection_dir_bottom = dir + "bottom/" + new_gender + "/" + new_likelihood + "/"
+            selection_dir_bottom = (
+                dir + "bottom/" + new_gender + "/" + new_likelihood + "/"
+            )
             addFile(selection_dir_bottom, "Clothes")
         else:
             raise Exception("Unknown Clothing Section Selection")
@@ -239,6 +251,7 @@ def addRandomAsset(type, dir, gender_Weight):
 
     return
 
+
 def dir_likeihood():
     """
     Choose 'common' 'medium' or 'uncommon' subdir to select asset from based on probability
@@ -246,6 +259,7 @@ def dir_likeihood():
     """
     global assets_common, assets_medium, assets_uncommon
     import random
+
     # Make Random Selection
     choice = random.randint(1, 100)
     if choice <= assets_common:
@@ -273,6 +287,7 @@ def randomAsset(directory):
 	:return: File Type Avaliable, either 'proxy' or 'clo'
 	"""
     import random
+
     # Make a Random Choice in the directory to get an asset
     namechoice = random.choice(
         [
@@ -308,6 +323,7 @@ def addProxyAsset(type, pxyfile):
     global human
     import proxy, events3d
     import numpy as np
+
     pxy = proxy.loadProxy(human, str(pxyfile), type=type)
     mesh, obj = pxy.loadMeshAndObject(human)
     mesh.setPickable(True)
@@ -356,6 +372,7 @@ def addCloAsset(type, clofile):
         raise Exception("Unknown Asset Type")
     return
 
+
 def exportMHX2(path):
     """
     Save current human + assets as .mhx2
@@ -391,13 +408,13 @@ def exportMHX2(path):
     return
 
 
-
 def resetAll():
     """
     Resets Human With Base CMU Skeleton
     :return:
     """
     import skeleton
+
     global cmu_skel_file
     # Reset Human
     G.app._resetHuman()
@@ -410,14 +427,60 @@ def resetAll():
 # Start Creating Makehumans
 resetAll()
 current_date = datetime.now()
-suffix = ''.join(random.choices(string.ascii_letters + string.digits, k=4))
-folder_date = str(current_date.month) + '-' + str(current_date.day) + '-' + str(current_date.year) + '-' + suffix
-os.mkdir(outputdir + '/' + str(folder_date))
+suffix = "".join(random.choices(string.ascii_letters + string.digits, k=4))
+folder_date = (
+    str(current_date.month)
+    + "-"
+    + str(current_date.day)
+    + "-"
+    + str(current_date.year)
+    + "-"
+    + suffix
+)
+os.mkdir(outputdir + "/" + str(folder_date))
 
-for iter_num in range(num_humans+1):
+# Create ReadMe
+readme_filename = outputdir + "/readme_parameters.md"
+if os.path.exists(readme_filename):
+    append_write = "a"
+else:
+    append_write = "w"
+readme = open(readme_filename, append_write)
+readme.write("Folder No: {} \n".format(folder_date))
+readme.write("Number of Humans: {} \n".format(num_humans))
+readme.write(
+    "Gender Lower Limit {}, Higher Limit {} \n".format(gender_low, gender_high)
+)
+readme.write(
+    "Percentage of Humans will Full (vs Top/Bottom) Clothes: {} \n".format(
+        clothing_full
+    )
+)
+readme.write("Lower Age Limit: {} \n".format(age_limit))
+readme.write(
+    "Percentage of Common/Medium/Uncommon Assets: {} - {} - {} \n".format(
+        assets_common, assets_medium, assets_uncommon
+    )
+)
+readme.write(
+    "Percentage without: Clothes {} - Hair {} - Beard {} - Eyebrows {} - Glasses {} - Hats {} - Shoes {} - Accessories {} \n".format(
+        withoutClothes,
+        withoutHair,
+        withoutBeard,
+        withoutEyebrows,
+        withoutGlasses,
+        withoutHats,
+        withoutShoes,
+        withoutAccessories,
+    )
+)
+readme.write(" \n")
+readme.close()
+
+# Create Humans
+for iter_num in range(num_humans):
 
     genderWeight = setRandomMHWeights()
-
     # Choose/Add Random Clothing Asset
     asset_equipChoice("Clothes", genderWeight, withoutClothes)
     # Choose/Add Random Hair Asset
@@ -436,19 +499,22 @@ for iter_num in range(num_humans+1):
     asset_equipChoice("Beard", genderWeight, withoutBeard)
 
     # Export MHX2 with Random 12dig Filename
-    namestr = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
-    os.mkdir(outputdir + '/' + str(folder_date) + '/' + namestr)
-    exportMHX2(outputdir + '/' + str(folder_date) + '/' + namestr + '/' + namestr + ".mhx2")
+    namestr = "".join(random.choices(string.ascii_letters + string.digits, k=12))
+    os.mkdir(outputdir + "/" + str(folder_date) + "/" + namestr)
+    exportMHX2(
+        outputdir + "/" + str(folder_date) + "/" + namestr + "/" + namestr + ".mhx2"
+    )
 
     # Delete All Clothes
     resetAll()
 
     # Print Time
-    print("{} of {} Humans Completed - Runtime {} Minutes".format(iter_num, num_humans, round((time.time() - start_time) / 60,2)))
+    print(
+        "{} of {} Humans Completed - Runtime {} Minutes".format(
+            iter_num, num_humans, round((time.time() - start_time) / 60, 2)
+        )
+    )
 
-    iter_num+=1
+    iter_num += 1
 
-print("Total Elasped Time {} Minutes".format(round((time.time() - start_time) / 60,2)))
-
-
-outputdir = "/home/warren/data/synthetic-training/humans-assets/makeHumans"
+print("Total ElapsedTime {} Minutes".format(round((time.time() - start_time) / 60, 2)))
