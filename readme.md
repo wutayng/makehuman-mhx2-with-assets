@@ -4,7 +4,7 @@
 <hr>
 
 ## Instructions
-####Install Makehuman
+#### Install Makehuman
 Download Plugins - 1_mhapi and 9_export_mhx2  
 Copy into Plugins Folder and Enable Plugins via Makehuman GUI
 #### To Test Asset Loading and Exports
